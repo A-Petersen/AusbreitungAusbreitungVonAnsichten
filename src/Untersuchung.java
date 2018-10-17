@@ -47,8 +47,8 @@ public class Untersuchung {
 
         FileWriter outputfile = new FileWriter(file);
         CSVWriter writer = new CSVWriter(outputfile);
-        String[] header = { "Tag", "Prozent", "TestReihe" };
-        writer.writeNext(header);
+        String[] kopf = { "Tag", "Prozent", "TestReihe" };
+        writer.writeNext(kopf);
 
         u1.forEach(l -> l.forEach(s -> writer.writeNext(s)));
         u2.forEach(l -> l.forEach(s -> writer.writeNext(s)));
@@ -78,7 +78,7 @@ public class Untersuchung {
                 ablauf.simTagUnabhaengigeMeinung(wahrscheinlichkeitMeinungsbildung);
             }
 
-            String[] csvData_x = {tag + "", ablauf.meinungsVerteilung() + "", ablaufart ? "abhängiger_" + nr :"unabhängiger_" + nr};
+            String[] csvData_x = {tag + "", ablauf.meinungsVerteilung() + "", ablaufart ? "AbhaengigeMeinungsbildung_" + nr :"UnabhaengigeMeinungsbildung_" + nr};
             csvDataList.add(csvData_x);
         }
         zwischenErgebnis(ablauf, ablaufart ? "abhängiger":"unabhängiger");
