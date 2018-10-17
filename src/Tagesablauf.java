@@ -44,13 +44,13 @@ public class Tagesablauf {
         {
             Person p = new Person(false, 2);
             personen.add(p);
-            System.out.println("Add Person.");
+//            System.out.println("Add Person.");
         }
         for (int i = 0; i < anzA; i++)
         {
             int rand = randGen.nextInt(n);
             System.out.println("Setze Meinung bei Person " + rand + ".");
-            personen.get(rand).setMeinung();
+            personen.get(rand).setMeinungA(true);
         }
     }
 
@@ -69,34 +69,43 @@ public class Tagesablauf {
      * Wahrscheinlichkeit pT.
      * @param pT Wahrschienlichkeit in Prozent (int 0... 100)
      */
-    void simTagAbhaengigeMeinung(int pT)
+    void simTagAbhaengigeMeinung(double pT)
     {
         int index = 0;
         for (Person person : personen)
         {
             for (int i = index + 1; i < personen.size(); i++)
             {
-                int randomNum = randGen.nextInt(101);
-                if (randomNum <= pT) person.abhaengigeMeinung(personen.get(i));
+                double randomNum = randGen.nextInt(10001) / 100.0;
+                if (randomNum <= pT) {
+                    if (person.abhaengigeMeinung(personen.get(i))) anzMeinungA++;
+                }
             }
             index++;
         }
     }
 
-    private void erhöheAnzMeinungen(int n)
-    {
-        this.anzMeinungA = anzMeinungA + n;
+    void simTagUnabhaengigeMeinung(double pA) {
+        for (Person person : personen)
+        {
+            if (person.unabhaengigeMeinung(pA)) anzMeinungA++;
+        }
     }
+
+//    private void erhöheAnzMeinungen(int n)
+//    {
+//        this.anzMeinungA = anzMeinungA + n;
+//    }
 
     double meinungsVerteilung ()
     {
-        anzMeinungA = 0;
-        personen.forEach(person -> {
-            if (person.getAnsichtA())
-            {
-                erhöheAnzMeinungen(1);
-            }
-        });
+//        anzMeinungA = 0;
+//        personen.forEach(person -> {
+//            if (person.getMeinungA())
+//            {
+//                erhöheAnzMeinungen(1);
+//            }
+//        });
         return (double)anzMeinungA/personen.size()*100.0;
     }
 
@@ -105,7 +114,7 @@ public class Tagesablauf {
         String ausgabe = "";
         for (Person p: personen)
         {
-            if (p.getAnsichtA())
+            if (p.getMeinungA())
             {
                 ausgabe = ausgabe + "|";
             } else {
@@ -115,8 +124,23 @@ public class Tagesablauf {
         return ">> " + ausgabe + " <<";
     }
 
+
+    void zwischenErgebnis()
+    {
+        System.out.println( "Tagesablauf mit unabhängiger Meinungsbildung\n" +
+                "Meinungsverteilung in %:\t" + meinungsVerteilung() +
+                " (" +  getAnzMeinungA() + "/50)\n" +
+                ausgabeMeinungsverteilung()
+        );
+    }
+
     int getAnzMeinungA()
     {
         return anzMeinungA;
+    }
+
+    List<Person> getPersonen()
+    {
+        return personen;
     }
 }

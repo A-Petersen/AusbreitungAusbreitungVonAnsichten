@@ -5,7 +5,7 @@ public class Person {
     private static int pIDCount;
     private int pID;
 
-    private boolean AnsichtA;
+    private boolean meinungA;
     /**
      * Anzahl der vergangenen Treffen
      */
@@ -27,7 +27,7 @@ public class Person {
     Person (boolean m, int aT)
     {
         pID = pIDCount;
-        AnsichtA = m;
+        meinungA = m;
         anzBenoetigterTreffen = aT;
         pIDCount++;
     }
@@ -39,10 +39,16 @@ public class Person {
      * Kann die Meinung nur setzen, nicht rücksetzen!!!
      * @param pA    Wahrscheinlichkeint der Meinungsbildung (int von 0... 100)
      */
-    void unabhaengigeMeinung (int pA)
+    boolean unabhaengigeMeinung (double pA)
     {
-        int randomNum = randGen.nextInt(101);
-        AnsichtA = ( randomNum <= pA && AnsichtA != true ) ? false : true;
+        boolean aenderung = false;
+        if (!meinungA)
+        {
+            double randomNum = randGen.nextInt(10001) / 100.0;
+            meinungA = randomNum <= pA ? true : false;
+            aenderung = meinungA;
+        }
+        return aenderung;
     }
 
     /**
@@ -51,26 +57,54 @@ public class Person {
      * nötige Anzahl von Treffen erreicht oder überschritten wurde
      * und die getroffene Person die nötige Ansicht A vertritt.
      */
-    void abhaengigeMeinung(Person p)
+    boolean abhaengigeMeinung(Person p)
     {
-        if (p.getAnsichtA()) {
+        boolean aenderung = false;
+        if (!p.getMeinungA() && meinungA) {
+            aenderung = p.abhaengigeMeinung(this);
+        }
+        if (p.getMeinungA() && !meinungA) {
             if (anzTreffen >= anzBenoetigterTreffen) {
-                AnsichtA = true;
+                meinungA = true;
+                aenderung = true;
             }
             anzTreffen++;
         }
+//        if (this.getMeinungA() && !p.getMeinungA()) {
+//            p.setMeinungA(true);
+//            if (p.getAnzTreffen() >= p.getAnzBenoetigterTreffen()) {
+//                AnsichtA = true;
+//            }
+//            anzTreffen++;
+//        }
+//        System.out.println(toString() + "\tTreffen mit PersonID: " + p.pID);
+        return aenderung;
     }
 
     /**
      * Setzt die Meinung/Ansicht A auf true.
      */
-    void setMeinung ()
+    void setMeinungA (boolean b)
     {
-        AnsichtA = true;
+        meinungA = b;
     }
 
-    boolean getAnsichtA()
+    boolean getMeinungA()
     {
-        return AnsichtA;
+        return meinungA;
+    }
+
+    int getAnzTreffen()
+    {
+        return anzTreffen;
+    }
+
+    int getAnzBenoetigterTreffen()
+    {
+        return anzBenoetigterTreffen;
+    }
+
+    public String toString() {
+        return "PersonID:\t" + pID + "\tAnzahl an Treffen(A): " + anzTreffen + " Meinung: " + (meinungA ? "A" : "X") + ".";
     }
 }
