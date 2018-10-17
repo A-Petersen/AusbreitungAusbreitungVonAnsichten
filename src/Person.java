@@ -15,6 +15,11 @@ public class Person {
      */
     private int anzBenoetigterTreffen;
     /**
+     * vergangene Tage seit Empfänglichkeit für Meinung
+     */
+    private int vergangeneTage;
+    private int dauerEmpfaenglichkeit;
+    /**
      * RandomGenerator
      */
     private Random randGen = new Random();
@@ -24,12 +29,14 @@ public class Person {
      * @param m     initiale Ansicht A
      * @param aT    Benötigte Anzahl von Treffen für abhängige Meinungsbildung
      */
-    Person (boolean m, int aT)
+    Person (boolean m, int aT, int dE)
     {
         pID = pIDCount;
         meinungA = m;
         anzBenoetigterTreffen = aT;
         pIDCount++;
+        vergangeneTage = 0;
+        dauerEmpfaenglichkeit = dE;
     }
 
     /**
@@ -59,9 +66,12 @@ public class Person {
      */
     boolean abhaengigeMeinung(Person p)
     {
+        if (vergangeneTage >= dauerEmpfaenglichkeit) anzTreffen = 0;
+
         boolean aenderung = false;
         if (!p.getMeinungA() && meinungA) {
             aenderung = p.abhaengigeMeinung(this);
+            p.resetVergangeneTage();
         }
         if (p.getMeinungA() && !meinungA) {
             if (anzTreffen >= anzBenoetigterTreffen) {
@@ -69,14 +79,8 @@ public class Person {
                 aenderung = true;
             }
             anzTreffen++;
+            resetVergangeneTage();
         }
-//        if (this.getMeinungA() && !p.getMeinungA()) {
-//            p.setMeinungA(true);
-//            if (p.getAnzTreffen() >= p.getAnzBenoetigterTreffen()) {
-//                AnsichtA = true;
-//            }
-//            anzTreffen++;
-//        }
 //        System.out.println(toString() + "\tTreffen mit PersonID: " + p.pID);
         return aenderung;
     }
@@ -106,5 +110,13 @@ public class Person {
 
     public String toString() {
         return "PersonID:\t" + pID + "\tAnzahl an Treffen(A): " + anzTreffen + " Meinung: " + (meinungA ? "A" : "X") + ".";
+    }
+
+    public void erhoeheVergangeneTage() {
+        this.vergangeneTage = vergangeneTage + 1;
+    }
+
+    public void resetVergangeneTage() {
+        this.vergangeneTage = 0;
     }
 }

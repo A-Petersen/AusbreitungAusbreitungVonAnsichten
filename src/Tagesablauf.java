@@ -42,7 +42,7 @@ public class Tagesablauf {
 
         for (int i = 0; i < n; i++)
         {
-            Person p = new Person(false, 2);
+            Person p = new Person(false, 2, 5);
             personen.add(p);
 //            System.out.println("Add Person.");
         }
@@ -82,6 +82,7 @@ public class Tagesablauf {
                 }
             }
             index++;
+            person.erhoeheVergangeneTage();
         }
     }
 
