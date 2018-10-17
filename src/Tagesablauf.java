@@ -129,7 +129,7 @@ public class Tagesablauf {
         return anzMeinungA;
     }
 
-    List<Person> getPersonen()
+    List<Person> getPersonenCSVData()
     {
         return personen;
     }
