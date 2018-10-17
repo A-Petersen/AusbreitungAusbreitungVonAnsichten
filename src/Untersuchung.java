@@ -15,20 +15,33 @@ public class Untersuchung {
     int meinungsvertreter;
     double wahrscheinlichkeitBegegnung;
     double wahrscheinlichkeitMeinungsbildung;
+    int anzDurchlaufe;
 
-    Untersuchung(int t, int p, int m, double wB, double wMB)
+    Untersuchung(int t, int p, int m, double wB, double wMB, int aD)
     {
         anzTage = t;
         anzPersonen = p;
         meinungsvertreter = m;
         wahrscheinlichkeitBegegnung = wB;
         wahrscheinlichkeitMeinungsbildung = wMB;
+        anzDurchlaufe = aD;
     }
 
     public void start() throws IOException {
 
-        List<String[]> u1 = untersuchung(true);
-        List<String[]> u2 = untersuchung(false);
+        List<List<String[]>> u1 = new LinkedList<>();
+        for (int i = 0; i < anzDurchlaufe; i++)
+        {
+            List<String[]> x = untersuchung(true, i);
+            u1.add(x);
+        }
+
+        List<List<String[]>> u2 = new LinkedList<>();
+        for (int i = 0; i < anzDurchlaufe; i++)
+        {
+            List<String[]> x = untersuchung(false, i);
+            u1.add(x);
+        }
 
         File file = new File("X:\\IntellijProjects\\IntSys\\AusbreitungVonAnsichten\\DatenReihen.csv");
 
@@ -37,8 +50,8 @@ public class Untersuchung {
         String[] header = { "Tag", "Prozent", "TestReihe" };
         writer.writeNext(header);
 
-        u1.forEach(s -> writer.writeNext(s));
-        u2.forEach(s -> writer.writeNext(s));
+        u1.forEach(l -> l.forEach(s -> writer.writeNext(s)));
+        u2.forEach(l -> l.forEach(s -> writer.writeNext(s)));
 
         writer.close();
 
@@ -51,7 +64,7 @@ public class Untersuchung {
      *
      * @param ablaufart true für abhängige, false für unabhängige Meinung
      */
-    private List<String[]> untersuchung(boolean ablaufart)
+    private List<String[]> untersuchung(boolean ablaufart, int nr)
     {
         Tagesablauf ablauf = new Tagesablauf(anzPersonen, meinungsvertreter);
         List<String[]> csvDataList = new LinkedList<String[]>();
@@ -65,7 +78,7 @@ public class Untersuchung {
                 ablauf.simTagUnabhaengigeMeinung(wahrscheinlichkeitMeinungsbildung);
             }
 
-            String[] csvData_x = {tag + "", ablauf.meinungsVerteilung() + "", ablaufart ? "abhängiger":"unabhängiger"};
+            String[] csvData_x = {tag + "", ablauf.meinungsVerteilung() + "", ablaufart ? "abhängiger_" + nr :"unabhängiger_" + nr};
             csvDataList.add(csvData_x);
         }
         zwischenErgebnis(ablauf, ablaufart ? "abhängiger":"unabhängiger");
