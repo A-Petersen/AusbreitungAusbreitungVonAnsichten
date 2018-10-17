@@ -49,7 +49,7 @@ public class Tagesablauf {
         for (int i = 0; i < anzA; i++)
         {
             int rand = randGen.nextInt(n);
-            System.out.println("Setze Meinung bei Person " + rand + ".");
+//            System.out.println("Setze Meinung bei Person " + rand + ".");
             personen.get(rand).setMeinungA(true);
         }
     }
@@ -122,16 +122,6 @@ public class Tagesablauf {
             }
         }
         return ">> " + ausgabe + " <<";
-    }
-
-
-    void zwischenErgebnis()
-    {
-        System.out.println( "Tagesablauf mit unabhängiger Meinungsbildung\n" +
-                "Meinungsverteilung in %:\t" + meinungsVerteilung() +
-                " (" +  getAnzMeinungA() + "/50)\n" +
-                ausgabeMeinungsverteilung()
-        );
     }
 
     int getAnzMeinungA()
