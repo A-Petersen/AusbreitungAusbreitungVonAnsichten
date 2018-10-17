@@ -1,3 +1,7 @@
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class Untersuchung {
     int anzTage;
     int anzPersonen;
@@ -16,7 +20,7 @@ public class Untersuchung {
 
     public void start()
     {
-        untersuchung(true);
+        System.out.println(untersuchung(true));
         untersuchung(false);
     }
 
@@ -24,9 +28,10 @@ public class Untersuchung {
      *
      * @param ablaufart true für abhängige, false für unabhängige Meinung
      */
-    private void untersuchung(boolean ablaufart)
+    private List<Double> untersuchung(boolean ablaufart)
     {
         Tagesablauf ablauf = new Tagesablauf(anzPersonen, meinungsvertreter);
+        List<Double> pTag = new LinkedList<Double>();
         for (int tag = 0; tag < anzTage; tag++)
         {
             if (ablaufart) {
@@ -36,9 +41,11 @@ public class Untersuchung {
             {
                 ablauf.simTagUnabhaengigeMeinung(wahrscheinlichkeitMeinungsbildung);
             }
+            pTag.add(ablauf.meinungsVerteilung());
 //            if (tag % 50 == 0) zwischenErgebnis(ablauf, ablaufart ? "abhängiger":"unabhängiger");
         }
         zwischenErgebnis(ablauf, ablaufart ? "abhängiger":"unabhängiger");
+        return pTag;
     }
 
     private void zwischenErgebnis(Tagesablauf tag, String s)
