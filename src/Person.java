@@ -52,7 +52,7 @@ public class Person {
         if (!meinungA)
         {
             double randomNum = randGen.nextInt(10001) / 100.0;
-            meinungA = randomNum <= pA ? true : false;
+            meinungA = randomNum <= pA;
             aenderung = meinungA;
         }
         return aenderung;

@@ -10,12 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Untersuchung {
-    int anzTage;
-    int anzPersonen;
-    int meinungsvertreter;
-    double wahrscheinlichkeitBegegnung;
-    double wahrscheinlichkeitMeinungsbildung;
-    int anzDurchlaufe;
+    private int anzTage;
+    private int anzPersonen;
+    private int meinungsvertreter;
+    private double wahrscheinlichkeitBegegnung;
+    private double wahrscheinlichkeitMeinungsbildung;
+    private int anzDurchlaufe;
 
     Untersuchung(int t, int p, int m, double wB, double wMB, int aD)
     {
@@ -35,8 +35,6 @@ public class Untersuchung {
             List<String[]> x = untersuchung(true, i);
             u1.add(x);
         }
-
-        List<List<String[]>> u2 = new LinkedList<>();
         for (int i = 0; i < anzDurchlaufe; i++)
         {
             List<String[]> x = untersuchung(false, i);
@@ -51,7 +49,6 @@ public class Untersuchung {
         writer.writeNext(kopf);
 
         u1.forEach(l -> l.forEach(s -> writer.writeNext(s)));
-        u2.forEach(l -> l.forEach(s -> writer.writeNext(s)));
 
         writer.close();
 
@@ -77,7 +74,6 @@ public class Untersuchung {
             {
                 ablauf.simTagUnabhaengigeMeinung(wahrscheinlichkeitMeinungsbildung);
             }
-
             String[] csvData_x = {tag + "", ablauf.meinungsVerteilung() + "", ablaufart ? "AbhaengigeMeinungsbildung_" + nr :"UnabhaengigeMeinungsbildung_" + nr};
             csvDataList.add(csvData_x);
         }
