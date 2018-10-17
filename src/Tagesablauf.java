@@ -97,7 +97,7 @@ public class Tagesablauf {
                 erhöheAnzMeinungen(1);
             }
         });
-        return personen.size()/(double)anzMeinungA;
+        return (double)anzMeinungA/personen.size()*100.0;
     }
 
     String ausgabeMeinungsverteilung()
@@ -112,7 +112,7 @@ public class Tagesablauf {
                 ausgabe = ausgabe + "-";
             }
         }
-        return ausgabe;
+        return ">> " + ausgabe + " <<";
     }
 
     int getAnzMeinungA()
