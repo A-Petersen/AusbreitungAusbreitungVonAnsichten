@@ -51,16 +51,16 @@ public class Untersuchung {
      * @param aBT Anzahl nötiger Treffen zur Überzeugung
      * @param dE Dauer der Empfänglichkeit
      */
-    Untersuchung(int t, int p, int m, double wB, double wMB, int aD, int aBT, int dE)
+    Untersuchung(int anzTage, int anzPersonen, int meinungsvertreter, double wahrscheinlichkeitBegegnung, double wahrscheinlichkeitMeinungsbildung, int anzDurchlaufe, int anzBenoetigterTreffen, int dauerEmpfaenglichkeit)
     {
-        anzTage = t;
-        anzPersonen = p;
-        meinungsvertreter = m;
-        wahrscheinlichkeitBegegnung = wB;
-        wahrscheinlichkeitMeinungsbildung = wMB;
-        anzDurchlaufe = aD;
-        anzBenoetigterTreffen = aBT;
-        dauerEmpfaenglichkeit = dE;
+        this.anzTage = anzTage;
+        this.anzPersonen = anzPersonen;
+        this.meinungsvertreter = meinungsvertreter;
+        this.wahrscheinlichkeitBegegnung = wahrscheinlichkeitBegegnung;
+        this.wahrscheinlichkeitMeinungsbildung = wahrscheinlichkeitMeinungsbildung;
+        this.anzDurchlaufe = anzDurchlaufe;
+        this.anzBenoetigterTreffen = anzBenoetigterTreffen;
+        this.dauerEmpfaenglichkeit = dauerEmpfaenglichkeit;
     }
 
     /**
