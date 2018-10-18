@@ -41,7 +41,7 @@ public class Untersuchung {
             u1.add(x);
         }
 
-        File file = new File("X:\\IntellijProjects\\IntSys\\AusbreitungVonAnsichten\\DatenReihen.csv");
+        File file = new File("DatenReihen.csv");
 
         FileWriter outputfile = new FileWriter(file);
         CSVWriter writer = new CSVWriter(outputfile);
