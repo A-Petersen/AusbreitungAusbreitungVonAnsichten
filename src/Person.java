@@ -51,6 +51,8 @@ public class Person {
         boolean aenderung = false;
         if (!meinungA)
         {
+            //TODO: DoubleGen nutzen, new Random(x) zum debuggen (deterministisch), < statt <=,
+            // pa = 0.1 ... pa,n = 1-(1-pa)^n .... k * pa,n (3 bereits bestehende Meinungen beachten)
             double randomNum = randGen.nextInt(10001) / 100.0;
             meinungA = randomNum <= pA;
             aenderung = meinungA;

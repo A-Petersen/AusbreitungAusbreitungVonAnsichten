@@ -10,14 +10,48 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Untersuchung {
+    /**
+     * Anzahl der durchzuführenden Tage
+      */
     private int anzTage;
+    /**
+     *  Anzahl der beteiligten Personen
+     */
     private int anzPersonen;
+    /**
+     * Anzahl der Meinungsvertreter A bei start
+     */
     private int meinungsvertreter;
+    /**
+     * Wahrscheinlichkeit der Begegnungen zwischen den Personen
+     */
     private double wahrscheinlichkeitBegegnung;
+    /**
+     * Wahrscheinlichkeit der unabhängigen Meinungsbildung
+     */
     private double wahrscheinlichkeitMeinungsbildung;
+    /**
+     * Anzahl der Testdurchläufe
+     */
     private int anzDurchlaufe;
+    /**
+     * Benötigte Anzahl von Treffen für abhängige Meinungsbildung
+     */
+    private int anzBenoetigterTreffen;
+    private int dauerEmpfaenglichkeit;
 
-    Untersuchung(int t, int p, int m, double wB, double wMB, int aD)
+    /**
+     * Spezifizieren der durchzuführenden Untersuchung
+     * @param t Anzahl der Tage
+     * @param p Anzahl der Personen
+     * @param m Anzahl der Meinungsvertreter
+     * @param wB Wahrscheinlichkeit einer Begegnung
+     * @param wMB Wahrscheinlichkeit persönlicher Meinungsbildung
+     * @param aD Anzahl der Durchläufe
+     * @param aBT Anzahl nötiger Treffen zur Überzeugung
+     * @param dE Dauer der Empfänglichkeit
+     */
+    Untersuchung(int t, int p, int m, double wB, double wMB, int aD, int aBT, int dE)
     {
         anzTage = t;
         anzPersonen = p;
@@ -25,8 +59,14 @@ public class Untersuchung {
         wahrscheinlichkeitBegegnung = wB;
         wahrscheinlichkeitMeinungsbildung = wMB;
         anzDurchlaufe = aD;
+        anzBenoetigterTreffen = aBT;
+        dauerEmpfaenglichkeit = dE;
     }
 
+    /**
+     * Startet die spezifizierte Untersuchung
+     * @throws IOException
+     */
     public void start() throws IOException {
 
         List<List<String[]>> u1 = new LinkedList<>();
@@ -41,7 +81,7 @@ public class Untersuchung {
             u1.add(x);
         }
 
-        File file = new File("X:\\IntellijProjects\\IntSys\\AusbreitungVonAnsichten\\DatenReihen.csv");
+        File file = new File("DatenReihen.csv");
 
         FileWriter outputfile = new FileWriter(file);
         CSVWriter writer = new CSVWriter(outputfile);
@@ -63,7 +103,7 @@ public class Untersuchung {
      */
     private List<String[]> untersuchung(boolean ablaufart, int nr)
     {
-        Tagesablauf ablauf = new Tagesablauf(anzPersonen, meinungsvertreter);
+        Tagesablauf ablauf = new Tagesablauf(anzPersonen, meinungsvertreter, anzBenoetigterTreffen, dauerEmpfaenglichkeit);
         List<String[]> csvDataList = new LinkedList<String[]>();
         for (int tag = 0; tag < anzTage; tag++)
         {

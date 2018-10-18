@@ -12,6 +12,9 @@ public class Tagesablauf {
      * RandomGenerator
      */
     private Random randGen = new Random();
+    /**
+     * Anzahl der Meinungen A in der Liste der Personen
+     */
     private int anzMeinungA;
 
     /**
@@ -19,10 +22,10 @@ public class Tagesablauf {
      * @param p Anzahl an Personen im Tag
      * @param anzA Anzahl an Personen mit Meinung A
      */
-    Tagesablauf (int p, int anzA)
+    Tagesablauf (int p, int anzA, int aBT, int dE)
     {
         personen = new LinkedList<Person>();
-        fuellePersonen(p, anzA);
+        fuellePersonen(p, anzA, aBT, dE);
         anzMeinungA = anzA;
     }
 
@@ -32,7 +35,7 @@ public class Tagesablauf {
      * @param n Anzahl an Personen
      * @param anzA Anzahl an Personen mit Meinung A
      */
-    private void fuellePersonen (int n, int anzA)
+    private void fuellePersonen (int n, int anzA, int aBT, int dE)
     {
         if (!personen.isEmpty())
         {
@@ -42,7 +45,7 @@ public class Tagesablauf {
 
         for (int i = 0; i < n; i++)
         {
-            Person p = new Person(false, 2, 5);
+            Person p = new Person(false, aBT, dE);
             personen.add(p);
 //            System.out.println("Add Person.");
         }
@@ -71,14 +74,16 @@ public class Tagesablauf {
      */
     void simTagAbhaengigeMeinung(double pT)
     {
-        int index = 0;
+        int index = 1;
+        boolean aenderung;
         for (Person person : personen)
         {
-            for (int i = index + 1; i < personen.size(); i++)
+            for (int i = index; i < personen.size(); i++)
             {
                 double randomNum = randGen.nextInt(10001) / 100.0;
                 if (randomNum <= pT) {
-                    if (person.abhaengigeMeinung(personen.get(i))) anzMeinungA++;
+                    aenderung = person.abhaengigeMeinung(personen.get(i));
+                    if (aenderung) anzMeinungA++;
                 }
             }
             index++;
@@ -86,6 +91,10 @@ public class Tagesablauf {
         }
     }
 
+    /**
+     * Simuliert die unabhängige Meinungsbildung der Personen, bei einer spezifizierten Wahrscheinlichkeit
+     * @param pA Wahrscheinlichkeit der unabhängigen Meinungsbildung
+     */
     void simTagUnabhaengigeMeinung(double pA) {
         for (Person person : personen)
         {
@@ -98,6 +107,10 @@ public class Tagesablauf {
 //        this.anzMeinungA = anzMeinungA + n;
 //    }
 
+    /**
+     *
+     * @return
+     */
     double meinungsVerteilung ()
     {
 //        anzMeinungA = 0;
