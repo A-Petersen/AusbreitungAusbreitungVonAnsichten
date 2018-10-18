@@ -71,12 +71,15 @@ public class Person {
         if (vergangeneTage >= dauerEmpfaenglichkeit) anzTreffen = 0;
 
         boolean aenderung = false;
-        if (!p.getMeinungA() && meinungA) {
+        if (!p.getMeinungA() && meinungA)
+        {
             aenderung = p.abhaengigeMeinung(this);
             p.resetVergangeneTage();
         }
-        if (p.getMeinungA() && !meinungA) {
-            if (anzTreffen >= anzBenoetigterTreffen) {
+        if (p.getMeinungA() && !meinungA)
+        {
+            if (anzTreffen >= anzBenoetigterTreffen)
+            {
                 meinungA = true;
                 aenderung = true;
             }
