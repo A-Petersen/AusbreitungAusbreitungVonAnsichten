@@ -11,7 +11,7 @@ public class Tagesablauf {
     /**
      * RandomGenerator
      */
-    private Random randGen = new Random();
+    private Random randGen = new Random(); //TODO: threadLocalRandom
     /**
      * Anzahl der Meinungen A in der Liste der Personen
      */
