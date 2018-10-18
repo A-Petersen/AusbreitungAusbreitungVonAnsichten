@@ -3,6 +3,7 @@ import java.io.IOException;
 public class main {
     public static void main(String [ ] args) throws IOException {
 
+        //TODO: uU. nicht gut implementiert, MagicValues !?
         Untersuchung u =    new Untersuchung
                             (
                             230,
