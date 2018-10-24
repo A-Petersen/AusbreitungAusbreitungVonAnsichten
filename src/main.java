@@ -18,5 +18,6 @@ public class main {
 
         u.start();
 
+        //TODO: 102% bei unabhängige möglich !!!!!!!!
     }
 }
