@@ -53,7 +53,8 @@ public class Person {
         {
             //TODO: DoubleGen nutzen, new Random(x) zum debuggen (deterministisch), < statt <=,
             // pa = 0.1 ... pa,n = 1-(1-pa)^n .... k * pa,n (3 bereits bestehende Meinungen beachten)
-            double randomNum = randGen.nextInt(10001) / 100.0;
+//            double randomNum = randGen.nextInt(10001) / 100.0;
+            double randomNum = randGen.nextDouble() * 100.0;
             meinungA = randomNum <= pA;
             aenderung = meinungA;
         }
@@ -68,22 +69,21 @@ public class Person {
      */
     boolean abhaengigeMeinung(Person p)
     {
-        if (vergangeneTage >= dauerEmpfaenglichkeit) anzTreffen = 0;
+        if (vergangeneTage > dauerEmpfaenglichkeit) anzTreffen = 0;
 
         boolean aenderung = false;
         if (!p.getMeinungA() && meinungA)
         {
             aenderung = p.abhaengigeMeinung(this);
-            p.resetVergangeneTage();
         }
         if (p.getMeinungA() && !meinungA)
         {
+            anzTreffen++;
             if (anzTreffen >= anzBenoetigterTreffen)
             {
                 meinungA = true;
                 aenderung = true;
             }
-            anzTreffen++;
             resetVergangeneTage();
         }
 //        System.out.println(toString() + "\tTreffen mit PersonID: " + p.pID);

@@ -51,10 +51,14 @@ public class Tagesablauf {
         }
         for (int i = 0; i < anzA; i++)
         {
-            int rand = randGen.nextInt(n);
-//            System.out.println("Setze Meinung bei Person " + rand + ".");
-            personen.get(rand).setMeinungA(true);
+//            int rand = randGen.nextInt(n);
+            System.out.println("Setze Meinung bei Person " + i + ".");
+//            //TODO: if meinung set nochmal
+//
+//            personen.get(rand).setMeinungA(true);
+            personen.get(i).setMeinungA(true);
         }
+
     }
 
     /**
@@ -80,8 +84,9 @@ public class Tagesablauf {
         {
             for (int i = index; i < personen.size(); i++)
             {
-                double randomNum = randGen.nextInt(10001) / 100.0;
-                if (randomNum <= pT) {
+                double randomNum = randGen.nextDouble() * 100.0;
+                if (randomNum < pT) {
+//                    System.out.println("PID: " + i + "\t" + personen.get(i).getMeinungA() + " \t\t- Self: " + person.getMeinungA());
                     aenderung = person.abhaengigeMeinung(personen.get(i));
                     if (aenderung) anzMeinungA++;
                 }
@@ -96,9 +101,11 @@ public class Tagesablauf {
      * @param pA Wahrscheinlichkeit der unabhängigen Meinungsbildung
      */
     void simTagUnabhaengigeMeinung(double pA) {
+        boolean mAenderung;
         for (Person person : personen)
         {
-            if (person.unabhaengigeMeinung(pA)) anzMeinungA++;
+            mAenderung = person.unabhaengigeMeinung(pA);
+            if (mAenderung) anzMeinungA++;
         }
     }
 

@@ -1,7 +1,9 @@
 import com.opencsv.CSVWriter;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.LinePlot;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -75,11 +77,11 @@ public class Untersuchung {
             List<String[]> x = untersuchung(true, i);
             u1.add(x);
         }
-        for (int i = 0; i < anzDurchlaufe; i++)
-        {
-            List<String[]> x = untersuchung(false, i);
-            u1.add(x);
-        }
+//        for (int i = 0; i < anzDurchlaufe; i++)
+//        {
+//            List<String[]> x = untersuchung(false, i);
+//            u1.add(x);
+//        }
 
         File file = new File("DatenReihen.csv");
 
@@ -92,9 +94,17 @@ public class Untersuchung {
 
         writer.close();
 
+
+
         Table table = Table.read().csv("DatenReihen.csv");
+
+        NumberColumn testReihe = table.nCol("Prozent");
+        Table table1 = table.summarize(testReihe, mean).by("Tag");
+//        table1.first(3);
+//        table1.last(4);
+//        System.out.printf(table1.toString());
         Plot.show(LinePlot.create("Meinung",
-                table, "Tag", "Prozent", "TestReihe"));
+                table1, "Tag", "Mean [Prozent]")); // GroupBy
     }
 
     /**
@@ -129,7 +139,7 @@ public class Untersuchung {
     {
         System.out.println( "\nTagesablauf mit " + s + " Meinungsbildung\n" +
                 "Meinungsverteilung in %:\t" + tag.meinungsVerteilung() +
-                " (" +  tag.getAnzMeinungA() + "/50)\n" +
+                " (" +  tag.getAnzMeinungA() + "/" + anzPersonen + ")\n" +
                 tag.ausgabeMeinungsverteilung()
         );
     }
