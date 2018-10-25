@@ -77,17 +77,17 @@ public class Untersuchung {
             List<String[]> x = untersuchung(true, i);
             u1.add(x);
         }
-//        for (int i = 0; i < anzDurchlaufe; i++)
-//        {
-//            List<String[]> x = untersuchung(false, i);
-//            u1.add(x);
-//        }
+        for (int i = 0; i < anzDurchlaufe; i++)
+        {
+            List<String[]> x = untersuchung(false, i);
+            u1.add(x);
+        }
 
         File file = new File("DatenReihen.csv");
 
         FileWriter outputfile = new FileWriter(file);
         CSVWriter writer = new CSVWriter(outputfile);
-        String[] kopf = { "Tag", "Prozent", "TestReihe", "Durchschnitt" };
+        String[] kopf = { "Tag", "Prozent", "TestReihe" };
         writer.writeNext(kopf);
 
         u1.forEach(l -> l.forEach(s -> writer.writeNext(s)));
@@ -98,13 +98,14 @@ public class Untersuchung {
 
         Table table = Table.read().csv("DatenReihen.csv");
 
+        System.out.printf(table.toString());
         NumberColumn testReihe = table.nCol("Prozent");
-        Table table1 = table.summarize(testReihe, mean).by("Tag");
+        Table table1 = table.summarize(testReihe, mean).by("Tag", "TestReihe");
 //        table1.first(3);
 //        table1.last(4);
-//        System.out.printf(table1.toString());
+        System.out.printf(table1.toString());
         Plot.show(LinePlot.create("Meinung",
-                table1, "Tag", "Mean [Prozent]")); // GroupBy
+                table1, "Tag", "Mean [Prozent]", "TestReihe"));
     }
 
     /**
@@ -126,8 +127,9 @@ public class Untersuchung {
             }
             String[] csvData_x = {  tag + "",
                                     ablauf.meinungsVerteilung() + "",
-                                    ablaufart ? "AbhaengigeMeinungsbildung_" + nr :"UnabhaengigeMeinungsbildung_" + nr,
-                                    "x" //TODO: vll nötig
+                                    ablaufart ? "abhaengigeM" :"unabhaengigeM",
+//                    ablaufart ? "AbhaengigeMeinungsbildung_" + nr :"UnabhaengigeMeinungsbildung_" + nr,
+//                                    "x" //TODO: vll nötig
                                     };
             csvDataList.add(csvData_x);
         }
