@@ -81,10 +81,12 @@ public class Untersuchung {
     }
 
     /**
-     *
+     * Führt eine Untersuchung/Durchlauf durch und erstellt eine Liste mit StringArrays.
+     * Diese enthalten die Daten der Untersuchung, zugeschnitten für die Erstellung einer
+     * CSV Datei.
      * @param ablaufart true für abhängige, false für unabhängige Meinung
      */
-    private List<String[]> untersuchung(boolean ablaufart, int nr)
+    private List<String[]> untersuchung(boolean ablaufart)
     {
         Tagesablauf ablauf = new Tagesablauf(anzPersonen, meinungsvertreter, anzBenoetigterTreffen, dauerEmpfaenglichkeit);
         List<String[]> csvDataList = new LinkedList<String[]>();
@@ -107,6 +109,15 @@ public class Untersuchung {
         return csvDataList;
     }
 
+    /**
+     * Gibt ein Zwischenergebnis für einen Durchlauf auf dem Terminal aus.
+     * Beispielausgabe:
+     * Tagesablauf mit abhängiger Meinungsbildung
+     * Meinungsverteilung in %:	96.0 (48/50)
+     * >> ||||||||||||||||||||||||||||||||||-||||||||||||-|| <<
+     * @param tag Benötigt die Instanz des Tagesablauf
+     * @param s Bennenung der Durchlaufart (unabhängig oder abhängig)
+     */
     private void zwischenErgebnis(Tagesablauf tag, String s)
     {
         System.out.println( "\nTagesablauf mit " + s + " Meinungsbildung\n" +
@@ -116,6 +127,14 @@ public class Untersuchung {
         );
     }
 
+    /**
+     * Führt die Untersuchung durch und erstellt die CSV Datei für eine der spezifizierten
+     * Untersuchungsarten durch.
+     * (True für abhängige, False für unabhängige Meinungsbildung)
+     * @param dateiName Gewünschter Dateiname der CSV Datei
+     * @param untersuchungsart  True für abhängige, False für unabhängige Meinungsbildung
+     * @throws IOException
+     */
     private void erstelleDaten(String dateiName, boolean untersuchungsart) throws IOException {
         List<List<String[]>> list = new LinkedList<>();
         File file = new File(dateiName);
@@ -123,7 +142,7 @@ public class Untersuchung {
         CSVWriter writer = new CSVWriter(output);
         for (int i = 0; i < anzDurchlaufe; i++)
         {
-            List<String[]> x = untersuchung(untersuchungsart, i);
+            List<String[]> x = untersuchung(untersuchungsart);
             list.add(x);
         }
         String[] kopf = { "Tag", "Prozent", "TestReihe" };
