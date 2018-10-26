@@ -87,10 +87,10 @@ public class Untersuchung {
      */
     public void start() throws IOException {
         erstelleDaten("DatenReihen_abhaengig.csv", true);
-        System.out.println("Durchnitt nötiger Tage für 100% (abhaengig): " +
+        if (verbose) System.out.println("Durchnitt nötiger Tage für 100% (abhaengig): " +
                             getAndResetSchnitt() + "\tBei " + pBegegnung*100.0 + "%");
         erstelleDaten("DatenReihen_unabhaengig.csv", false);
-        System.out.println("Durchnitt nötiger Tage für 100% (unabhaengig): " +
+        if (verbose) System.out.println("Durchnitt nötiger Tage für 100% (unabhaengig): " +
                             getAndResetSchnitt() + "\tBei " + pMeinungsbildung*100.0 + "%");
     }
 
