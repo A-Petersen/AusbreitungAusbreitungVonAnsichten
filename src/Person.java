@@ -1,10 +1,24 @@
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
+/**
+ * Klasse Person
+ */
 public class Person {
 
+    /**
+     * Zähler für erstellte Personen
+     */
     private static int pIDCount;
+    /**
+     * Personen ID
+     */
     private int pID;
 
+    /**
+     * Vertritt Meinung A oder nicht
+     */
     private boolean meinungA;
     /**
      * Anzahl der vergangenen Treffen
@@ -18,7 +32,15 @@ public class Person {
      * vergangene Tage seit Empfänglichkeit für Meinung
      */
     private int vergangeneTage;
+    /**
+     * Anzahl der Tage bis die Empfänglichkeit erlischt
+     */
     private int dauerEmpfaenglichkeit;
+    /**
+     * Liste der Personen, die in den vergangenen Tagen getroffen wurden und
+     * Meinung A vertreten
+     */
+    private List<Person> missionare;
     /**
      * RandomGenerator
      */
@@ -37,6 +59,7 @@ public class Person {
         pIDCount++;
         vergangeneTage = 0;
         dauerEmpfaenglichkeit = dE;
+        missionare = new LinkedList<>();
     }
 
     /**
@@ -51,11 +74,10 @@ public class Person {
         boolean aenderung = false;
         if (!meinungA)
         {
-            //TODO: DoubleGen nutzen, new Random(x) zum debuggen (deterministisch), < statt <=,
+            //TODO: new Random(x) zum debuggen (deterministisch)
             // pa = 0.1 ... pa,n = 1-(1-pa)^n .... k * pa,n (3 bereits bestehende Meinungen beachten)
-//            double randomNum = randGen.nextInt(10001) / 100.0;
-            double randomNum = randGen.nextDouble() * 100.0;
-            meinungA = randomNum <= pA;
+            double randomNum = randGen.nextDouble();
+            meinungA = randomNum < pA;
             aenderung = meinungA;
         }
         return aenderung;
@@ -69,16 +91,25 @@ public class Person {
      */
     boolean abhaengigeMeinung(Person p)
     {
-        if (vergangeneTage > dauerEmpfaenglichkeit) anzTreffen = 0;
+        if (vergangeneTage > dauerEmpfaenglichkeit)
+        {
+            anzTreffen = 0;
+            missionare.clear();
+        }
 
         boolean aenderung = false;
+
         if (!p.getMeinungA() && meinungA)
         {
             aenderung = p.abhaengigeMeinung(this);
         }
-        if (p.getMeinungA() && !meinungA)
+
+        if (p.getMeinungA()
+            && !meinungA
+            && (missionare.isEmpty() ? true : !missionare.contains(p)))
         {
             anzTreffen++;
+            missionare.add(p);
             if (anzTreffen >= anzBenoetigterTreffen)
             {
                 meinungA = true;
@@ -86,7 +117,6 @@ public class Person {
             }
             resetVergangeneTage();
         }
-//        System.out.println(toString() + "\tTreffen mit PersonID: " + p.pID);
         return aenderung;
     }
 
@@ -98,29 +128,33 @@ public class Person {
         meinungA = b;
     }
 
+    /**
+     * Gibt Zustand von Meinung A zurück
+     * @return Hat oder hat nicht Meinung A
+     */
     boolean getMeinungA()
     {
         return meinungA;
     }
 
-    int getAnzTreffen()
-    {
-        return anzTreffen;
-    }
-
-    int getAnzBenoetigterTreffen()
-    {
-        return anzBenoetigterTreffen;
-    }
-
+    /**
+     * toString Methode
+     * @return Gibt Personen ID, anzahl an bereits grtroffenen Missionaren und derzeitige Meinung A zurück
+     */
     public String toString() {
         return "PersonID:\t" + pID + "\tAnzahl an Treffen(A): " + anzTreffen + " Meinung: " + (meinungA ? "A" : "X") + ".";
     }
 
+    /**
+     * Erhöht die vergangenen Tage seit Missionierung
+     */
     public void erhoeheVergangeneTage() {
         this.vergangeneTage = vergangeneTage + 1;
     }
 
+    /**
+     * Setzt die vergangenen Tage seit Missionierung zurück
+     */
     public void resetVergangeneTage() {
         this.vergangeneTage = 0;
     }

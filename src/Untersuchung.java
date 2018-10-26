@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Klasse Untersuchung
+ */
 public class Untersuchung {
     /**
      * Anzahl der durchzuführenden Tage
@@ -27,11 +30,11 @@ public class Untersuchung {
     /**
      * Wahrscheinlichkeit der Begegnungen zwischen den Personen
      */
-    private double wahrscheinlichkeitBegegnung;
+    private double pBegegnung;
     /**
      * Wahrscheinlichkeit der unabhängigen Meinungsbildung
      */
-    private double wahrscheinlichkeitMeinungsbildung;
+    private double pMeinungsbildung;
     /**
      * Anzahl der Testdurchläufe
      */
@@ -40,26 +43,29 @@ public class Untersuchung {
      * Benötigte Anzahl von Treffen für abhängige Meinungsbildung
      */
     private int anzBenoetigterTreffen;
+    /**
+     * Anzahl der Tage bis die Empfänglichkeit erlischt
+     */
     private int dauerEmpfaenglichkeit;
 
     /**
      * Spezifizieren der durchzuführenden Untersuchung
-     * @param t Anzahl der Tage
-     * @param p Anzahl der Personen
-     * @param m Anzahl der Meinungsvertreter
-     * @param wB Wahrscheinlichkeit einer Begegnung
-     * @param wMB Wahrscheinlichkeit persönlicher Meinungsbildung
-     * @param aD Anzahl der Durchläufe
-     * @param aBT Anzahl nötiger Treffen zur Überzeugung
-     * @param dE Dauer der Empfänglichkeit
+     * @param anzTage Anzahl der Tage
+     * @param anzPersonen Anzahl der Personen
+     * @param meinungsvertreter Anzahl der Meinungsvertreter
+     * @param pBegegnung Wahrscheinlichkeit einer Begegnung
+     * @param pMeinungsbildung Wahrscheinlichkeit persönlicher Meinungsbildung
+     * @param anzDurchlaufe Anzahl der Durchläufe
+     * @param anzBenoetigterTreffen Anzahl nötiger Treffen zur Überzeugung
+     * @param dauerEmpfaenglichkeit Dauer der Empfänglichkeit
      */
-    Untersuchung(int anzTage, int anzPersonen, int meinungsvertreter, double wahrscheinlichkeitBegegnung, double wahrscheinlichkeitMeinungsbildung, int anzDurchlaufe, int anzBenoetigterTreffen, int dauerEmpfaenglichkeit)
+    Untersuchung(int anzTage, int anzPersonen, int meinungsvertreter, double pBegegnung, double pMeinungsbildung, int anzDurchlaufe, int anzBenoetigterTreffen, int dauerEmpfaenglichkeit)
     {
         this.anzTage = anzTage;
         this.anzPersonen = anzPersonen;
         this.meinungsvertreter = meinungsvertreter;
-        this.wahrscheinlichkeitBegegnung = wahrscheinlichkeitBegegnung;
-        this.wahrscheinlichkeitMeinungsbildung = wahrscheinlichkeitMeinungsbildung;
+        this.pBegegnung = pBegegnung;
+        this.pMeinungsbildung = pMeinungsbildung;
         this.anzDurchlaufe = anzDurchlaufe;
         this.anzBenoetigterTreffen = anzBenoetigterTreffen;
         this.dauerEmpfaenglichkeit = dauerEmpfaenglichkeit;
@@ -70,42 +76,8 @@ public class Untersuchung {
      * @throws IOException
      */
     public void start() throws IOException {
-
-        List<List<String[]>> u1 = new LinkedList<>();
-        for (int i = 0; i < anzDurchlaufe; i++)
-        {
-            List<String[]> x = untersuchung(true, i);
-            u1.add(x);
-        }
-        for (int i = 0; i < anzDurchlaufe; i++)
-        {
-            List<String[]> x = untersuchung(false, i);
-            u1.add(x);
-        }
-
-        File file = new File("DatenReihen.csv");
-
-        FileWriter outputfile = new FileWriter(file);
-        CSVWriter writer = new CSVWriter(outputfile);
-        String[] kopf = { "Tag", "Prozent", "TestReihe" };
-        writer.writeNext(kopf);
-
-        u1.forEach(l -> l.forEach(s -> writer.writeNext(s)));
-
-        writer.close();
-
-
-
-        Table table = Table.read().csv("DatenReihen.csv");
-
-        System.out.printf(table.toString());
-        NumberColumn testReihe = table.nCol("Prozent");
-        Table table1 = table.summarize(testReihe, mean).by("Tag", "TestReihe");
-//        table1.first(3);
-//        table1.last(4);
-        System.out.printf(table1.toString());
-        Plot.show(LinePlot.create("Meinung",
-                table1, "Tag", "Mean [Prozent]", "TestReihe"));
+        erstelleDaten("DatenReihen_abhaengig.csv", true);
+        erstelleDaten("DatenReihen_unabhaengig.csv", false);
     }
 
     /**
@@ -116,20 +88,18 @@ public class Untersuchung {
     {
         Tagesablauf ablauf = new Tagesablauf(anzPersonen, meinungsvertreter, anzBenoetigterTreffen, dauerEmpfaenglichkeit);
         List<String[]> csvDataList = new LinkedList<String[]>();
-        for (int tag = 0; tag < anzTage; tag++)
+        for (int tag = 1; tag <= anzTage; tag++)
         {
             if (ablaufart) {
-                ablauf.simTagAbhaengigeMeinung(wahrscheinlichkeitBegegnung);
+                ablauf.simTagAbhaengigeMeinung(pBegegnung);
             }
             else
             {
-                ablauf.simTagUnabhaengigeMeinung(wahrscheinlichkeitMeinungsbildung);
+                ablauf.simTagUnabhaengigeMeinung(pMeinungsbildung);
             }
             String[] csvData_x = {  tag + "",
                                     ablauf.meinungsVerteilung() + "",
-                                    ablaufart ? "abhaengigeM" :"unabhaengigeM",
-//                    ablaufart ? "AbhaengigeMeinungsbildung_" + nr :"UnabhaengigeMeinungsbildung_" + nr,
-//                                    "x" //TODO: vll nötig
+                                    ablaufart ? "abhängige Meinungsbildung" :"unabhängige Meinungsbildung"
                                     };
             csvDataList.add(csvData_x);
         }
@@ -144,5 +114,28 @@ public class Untersuchung {
                 " (" +  tag.getAnzMeinungA() + "/" + anzPersonen + ")\n" +
                 tag.ausgabeMeinungsverteilung()
         );
+    }
+
+    private void erstelleDaten(String dateiName, boolean untersuchungsart) throws IOException {
+        List<List<String[]>> list = new LinkedList<>();
+        File file = new File(dateiName);
+        FileWriter output = new FileWriter(file);
+        CSVWriter writer = new CSVWriter(output);
+        for (int i = 0; i < anzDurchlaufe; i++)
+        {
+            List<String[]> x = untersuchung(untersuchungsart, i);
+            list.add(x);
+        }
+        String[] kopf = { "Tag", "Prozent", "TestReihe" };
+        writer.writeNext(kopf);
+        list.forEach(l -> l.forEach(s -> writer.writeNext(s)));
+        writer.close();
+
+        Table table = Table.read().csv(dateiName);
+        NumberColumn testReihe = table.nCol("Prozent");
+        Table table1 = table.summarize(testReihe, mean).by("Tag", "TestReihe");
+        System.out.printf(table1.toString());
+        Plot.show(LinePlot.create("Meinung",
+                table1, "Tag", "Mean [Prozent]", "TestReihe"));
     }
 }

@@ -1,23 +1,24 @@
 import java.io.IOException;
 
+/**
+ * Ausführende Main-Klasse
+ */
 public class main {
     public static void main(String [ ] args) throws IOException {
 
         //TODO: uU. nicht gut implementiert, MagicValues !?
         Untersuchung u =    new Untersuchung
                             (
-                            250,
+                            300,
                             50,
                             3,
-                            0.5,
-                            2,
-                            500,
+                            0.0065,
+                            0.03,
+                            100,
                             2,
                             5
                             );
 
         u.start();
-
-        //TODO: 102% bei unabhängige möglich !!!!!!!!
     }
 }
