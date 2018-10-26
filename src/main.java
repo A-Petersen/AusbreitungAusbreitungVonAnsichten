@@ -9,16 +9,16 @@ public class main {
         //TODO: uU. nicht gut implementiert, MagicValues !?
         Untersuchung u =    new Untersuchung
                             (
-                            250,
+                            500,
                             50,
                             3,
-                            0.0044,     //0.0065
-                            0.03,   //0.03
-                            100,
+                            0.00405,     //0.0063
+                            0.022,   //0.045
+                            10000,
                             2,
-                            5
+                            5,
+                            false
                             );
-
         u.start();
     }
 }

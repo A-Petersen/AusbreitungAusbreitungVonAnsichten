@@ -47,6 +47,14 @@ public class Untersuchung {
      * Anzahl der Tage bis die Empfänglichkeit erlischt
      */
     private int dauerEmpfaenglichkeit;
+    /**
+     * Summe der Tage für 100% pro Durchlauf
+     */
+    private double sumTage;
+    /**
+     * Debugausgabe für das Terminal setzen
+     */
+    private boolean verbose = false;
 
     /**
      * Spezifizieren der durchzuführenden Untersuchung
@@ -58,8 +66,9 @@ public class Untersuchung {
      * @param anzDurchlaufe Anzahl der Durchläufe
      * @param anzBenoetigterTreffen Anzahl nötiger Treffen zur Überzeugung
      * @param dauerEmpfaenglichkeit Dauer der Empfänglichkeit
+     * @param verbose Debugausgaben im Terminal aktivieren/deaktivieren
      */
-    Untersuchung(int anzTage, int anzPersonen, int meinungsvertreter, double pBegegnung, double pMeinungsbildung, int anzDurchlaufe, int anzBenoetigterTreffen, int dauerEmpfaenglichkeit)
+    Untersuchung(int anzTage, int anzPersonen, int meinungsvertreter, double pBegegnung, double pMeinungsbildung, int anzDurchlaufe, int anzBenoetigterTreffen, int dauerEmpfaenglichkeit, boolean verbose)
     {
         this.anzTage = anzTage;
         this.anzPersonen = anzPersonen;
@@ -69,6 +78,7 @@ public class Untersuchung {
         this.anzDurchlaufe = anzDurchlaufe;
         this.anzBenoetigterTreffen = anzBenoetigterTreffen;
         this.dauerEmpfaenglichkeit = dauerEmpfaenglichkeit;
+        this.verbose = verbose;
     }
 
     /**
@@ -77,7 +87,11 @@ public class Untersuchung {
      */
     public void start() throws IOException {
         erstelleDaten("DatenReihen_abhaengig.csv", true);
+        System.out.println("Durchnitt nötiger Tage für 100% (abhaengig): " +
+                            getAndResetSchnitt() + "\tBei " + pBegegnung*100.0 + "%");
         erstelleDaten("DatenReihen_unabhaengig.csv", false);
+        System.out.println("Durchnitt nötiger Tage für 100% (unabhaengig): " +
+                            getAndResetSchnitt() + "\tBei " + pMeinungsbildung*100.0 + "%");
     }
 
     /**
@@ -90,6 +104,7 @@ public class Untersuchung {
     {
         Tagesablauf ablauf = new Tagesablauf(anzPersonen, meinungsvertreter, anzBenoetigterTreffen, dauerEmpfaenglichkeit);
         List<String[]> csvDataList = new LinkedList<String[]>();
+        boolean sumTagBerechnet = false;
         for (int tag = 1; tag <= anzTage; tag++)
         {
             if (ablaufart) {
@@ -104,8 +119,14 @@ public class Untersuchung {
                                     ablaufart ? "abhängige Meinungsbildung" :"unabhängige Meinungsbildung"
                                     };
             csvDataList.add(csvData_x);
+            if (ablauf.meinungsVerteilung() >= 100 && !sumTagBerechnet)
+            {
+                sumTage = sumTage + tag;
+                sumTagBerechnet = true;
+
+            }
         }
-        zwischenErgebnis(ablauf, ablaufart ? "abhängiger":"unabhängiger");
+        if (verbose) zwischenErgebnis(ablauf, ablaufart ? "abhängiger":"unabhängiger");
         return csvDataList;
     }
 
@@ -123,7 +144,7 @@ public class Untersuchung {
         System.out.println( "\nTagesablauf mit " + s + " Meinungsbildung\n" +
                 "Meinungsverteilung in %:\t" + tag.meinungsVerteilung() +
                 " (" +  tag.getAnzMeinungA() + "/" + anzPersonen + ")\n" +
-                tag.ausgabeMeinungsverteilung()
+                tag.ausgabeMeinungsverteilung() + "\n"
         );
     }
 
@@ -153,8 +174,19 @@ public class Untersuchung {
         Table table = Table.read().csv(dateiName);
         NumberColumn testReihe = table.nCol("Prozent");
         Table table1 = table.summarize(testReihe, mean).by("Tag", "TestReihe");
-        System.out.printf(table1.toString());
+        if (verbose) System.out.printf(table1.toString());
         Plot.show(LinePlot.create("Meinung",
                 table1, "Tag", "Mean [Prozent]", "TestReihe"));
+    }
+
+    /**
+     * Ermittle den Schnitt für Tage bis 100% Personen Meinung A vertreten
+     * @return  Durchschnittliche Anzahl an Tagen
+     */
+    private double getAndResetSchnitt()
+    {
+        double x = sumTage;
+        sumTage = 0;
+        return x / anzDurchlaufe;
     }
 }
