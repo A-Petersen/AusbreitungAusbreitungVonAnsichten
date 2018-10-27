@@ -15,6 +15,7 @@ import java.util.List;
  * Klasse Untersuchung
  */
 public class Untersuchung {
+
     /**
      * Anzahl der durchzuführenden Tage
       */
@@ -87,10 +88,10 @@ public class Untersuchung {
      */
     public void start() throws IOException {
         erstelleDaten("DatenReihen_abhaengig.csv", true);
-        if (verbose) System.out.println("Durchnitt nötiger Tage für 100% (abhaengig): " +
+        if (verbose) System.out.println("\nDurchnitt nötiger Tage für 100% (abhaengig): " +
                             getAndResetSchnitt() + "\tBei " + pBegegnung*100.0 + "%");
         erstelleDaten("DatenReihen_unabhaengig.csv", false);
-        if (verbose) System.out.println("Durchnitt nötiger Tage für 100% (unabhaengig): " +
+        if (verbose) System.out.println("\nDurchnitt nötiger Tage für 100% (unabhaengig): " +
                             getAndResetSchnitt() + "\tBei " + pMeinungsbildung*100.0 + "%");
     }
 
@@ -102,31 +103,33 @@ public class Untersuchung {
      */
     private List<String[]> untersuchung(boolean ablaufart)
     {
+        // Erstellen des Tagesablaufs
         Tagesablauf ablauf = new Tagesablauf(anzPersonen, meinungsvertreter, anzBenoetigterTreffen, dauerEmpfaenglichkeit);
-        List<String[]> csvDataList = new LinkedList<String[]>();
-        boolean sumTagBerechnet = false;
-        for (int tag = 1; tag <= anzTage; tag++)
+        List<String[]> csvDataList = new LinkedList<String[]>();   // Liste mit StringArray für die Rückgabe der Methode (nötig für Erstellung von CSV-Datei)
+        boolean maxErreicht = false;                    // Bool um durchgeführten Schritt für die Durchschnittsbildung (Tage bis 100% MeinungA) zu kennzeichnen
+        for (int tag = 1; tag <= anzTage; tag++)            // Durchführen der Tage
         {
-            if (ablaufart) {
+            if (ablaufart && !maxErreicht) {    // Abfrage nach Ablaufart (True abhängige, False unabhängige) und ob bereits 100% Meinungsvertreter erreicht
                 ablauf.simTagAbhaengigeMeinung(pBegegnung);
             }
-            else
+            else if (!ablaufart && !maxErreicht)
             {
                 ablauf.simTagUnabhaengigeMeinung(pMeinungsbildung);
             }
+            // Eintragen der relevanten Daten in ein Array und hinzufügen in die Liste
             String[] csvData_x = {  tag + "",
                                     ablauf.meinungsVerteilung() + "",
                                     ablaufart ? "abhängige Meinungsbildung" :"unabhängige Meinungsbildung"
                                     };
             csvDataList.add(csvData_x);
-            if (ablauf.meinungsVerteilung() >= 100 && !sumTagBerechnet)
+            // Abfrage Tag erreicht 100% Meinungsvertreter A und Schritt für die Durchschnittsbildung hat nocht nicht stattgefunden
+            if (ablauf.meinungsVerteilung() >= 100 && !maxErreicht)
             {
-                sumTage = sumTage + tag;
-                sumTagBerechnet = true;
-
+                sumTage = sumTage + tag;    // Aufsummieren der nötigen Tage für 100%
+                maxErreicht = true;     // Bool setzen
             }
         }
-        if (verbose) zwischenErgebnis(ablauf, ablaufart ? "abhängiger":"unabhängiger");
+        if (verbose) zwischenErgebnis(ablauf, ablaufart ? "abhängiger":"unabhängiger"); // Terminal Ausgabe
         return csvDataList;
     }
 
@@ -157,20 +160,23 @@ public class Untersuchung {
      * @throws IOException
      */
     private void erstelleDaten(String dateiName, boolean untersuchungsart) throws IOException {
-        List<List<String[]>> list = new LinkedList<>();
+        List<List<String[]>> list = new LinkedList<>();             // Liste für Listen von Durchläufen
         File file = new File(dateiName);
         FileWriter output = new FileWriter(file);
         CSVWriter writer = new CSVWriter(output);
-        for (int i = 0; i < anzDurchlaufe; i++)
+        for (int i = 0; i < anzDurchlaufe; i++)                     // Führt die gewünschte Anzahl an Durchläufen durch
         {
-            List<String[]> x = untersuchung(untersuchungsart);
-            list.add(x);
+            List<String[]> x = untersuchung(untersuchungsart);      // Übergibt die gefüllte Liste mit Daten des Durchlaufs
+            list.add(x);                                            // Hängt die erstellte Liste an die Liste mit allen Durchläufen
         }
-        String[] kopf = { "Tag", "Prozent", "TestReihe" };
+        String[] kopf = { "Tag", "Prozent", "TestReihe" };          // Array für den CSV Kopf
         writer.writeNext(kopf);
+        // Schreibt jedes Array Element aus den Listen der Durchläufe, welche aus der gesamt Liste aller Durchläufe kommmen, den CSV Eintrag
+        // List<List<String[]>> list, wird hier durchlaufen
         list.forEach(l -> l.forEach(s -> writer.writeNext(s)));
         writer.close();
 
+        // Erstellen der html-Ausgabe
         Table table = Table.read().csv(dateiName);
         NumberColumn testReihe = table.nCol("Prozent");
         Table table1 = table.summarize(testReihe, mean).by("Tag", "TestReihe");
