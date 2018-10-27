@@ -58,15 +58,15 @@ public class Tagesablauf {
      * Lässt alle Personen in der Klasse eine Begegnung durchführen, mit der
      * Wahrscheinlichkeit pT.
      *
-     * @param pT Wahrschienlichkeit in Prozent (int 0... 100)
+     * @param pB Begegnungswahrscheinlichkeit in Prozent (int 0... 100)
      */
-    void simTagAbhaengigeMeinung(double pT) {
+    void simTagAbhaengigeMeinung(double pB) {
         int index = 1;           // Startindex der Schleife für die zu treffenden Personen
         boolean aenderung;
         for (Person person : personen) {
             for (int i = index; i < personen.size(); i++) {     // Durchlaufen aller verbliebenen Personen (nach Index)
                 double randomNum = randGen.nextDouble();
-                if (randomNum < pT) {                           // Abfrage, ob Treffen stattfindet
+                if (randomNum < pB) {                           // Abfrage, ob Treffen stattfindet
                     aenderung = person.abhaengigeMeinung(personen.get(i));  // Abhängige Meinungsbildung durchlaufen + Änderung der Meinung setzten, falls eingetreten
                     if (aenderung) anzMeinungA++;               // Wenn sich Meinung geändert hat, Anzahl an Meinungsvertretern erhöhen
                 }

@@ -95,7 +95,7 @@ public class Person {
 
         if (vergangeneTage > dauerEmpfaenglichkeit) // Abfrage Ablauf des Zeitabschnitts für Empfänglichkeit
         {
-            anzTreffen = 0;         // Anzahl der Treffen zurücksetzen
+//            anzTreffen = 0;         // Anzahl der Treffen zurücksetzen
             missionare.clear();     // Liste der getroffenen Personen mit Meinung A leeren
         }
 
@@ -110,14 +110,14 @@ public class Person {
             && !meinungA                                                // this vertritt Meinung A nicht
             && (missionare.isEmpty() ? true : !missionare.contains(p))) // getroffene Person gehört nicht zum Personenkreis, der this bereits missioniert hat
         {
-            anzTreffen++;
+//            anzTreffen++;
             missionare.add(p);                          // Füge Person zum Personenkreis, der this bereits missioniert hat, hinzu
-            if (anzTreffen >= anzBenoetigterTreffen)    // Abfrage auf ausreichend Treffen für Meinungsänderung
+            resetVergangeneTage();      // Zurücksetzen der vergangenen Tage für die Dauer der Empfänglichkeit
+            if (missionare.size() >= anzBenoetigterTreffen)    // Abfrage auf ausreichend Treffen für Meinungsänderung
             {
                 meinungA = true;
                 aenderung = true;
             }
-            resetVergangeneTage();      // Zurücksetzen der vergangenen Tage für die Dauer der Empfänglichkeit
         }
         return aenderung;
     }
