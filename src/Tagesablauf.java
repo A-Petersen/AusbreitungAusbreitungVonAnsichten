@@ -25,6 +25,8 @@ public class Tagesablauf {
      *
      * @param p    Anzahl an Personen im Tag
      * @param anzA Anzahl an Personen mit Meinung A
+     * @param aBT   Anzahl benötigter Treffen
+     * @param dE    Dauer der Empfänglichkeit
      */
     Tagesablauf(int p, int anzA, int aBT, int dE) {
         personen = new LinkedList<Person>();
@@ -36,31 +38,19 @@ public class Tagesablauf {
      * Füllt die Lsite Peronen, sofern sie noch nicht existiert und
      * setzt die gewünschte Anzahl an Personen mit Meinung/Ansicht A.
      *
-     * @param n    Anzahl an Personen
-     * @param anzA Anzahl an Personen mit Meinung A
+     * @param n     Anzahl an Personen
+     * @param anzA  Anzahl an Personen mit Meinung A
+     * @param aBT   Anzahl benötigter Treffen
+     * @param dE    Dauer der Empfänglichkeit
      */
     private void fuellePersonen(int n, int anzA, int aBT, int dE) {
-        if (!personen.isEmpty()) {
-            System.out.println("Personen Empty!");
-            return;
-        }
-
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {           // Erstellen der Personen und füllen der Liste
             Person p = new Person(false, aBT, dE);
             personen.add(p);
         }
-        for (int i = 0; i < anzA; i++) {
+        for (int i = 0; i < anzA; i++) {        // Setzen der initialen Meinungsvertreter
             personen.get(i).setMeinungA(true);
         }
-    }
-
-    /**
-     * Entfernt eine Person aus der Liste der Personen.
-     *
-     * @param p zu entfernende Person
-     */
-    void entfernePerson(Person p) {
-        personen.remove(p);
     }
 
     /**
@@ -71,18 +61,18 @@ public class Tagesablauf {
      * @param pT Wahrschienlichkeit in Prozent (int 0... 100)
      */
     void simTagAbhaengigeMeinung(double pT) {
-        int index = 1;
+        int index = 1;           // Startindex der Schleife für die zu treffenden Personen
         boolean aenderung;
         for (Person person : personen) {
-            for (int i = index; i < personen.size(); i++) {
+            for (int i = index; i < personen.size(); i++) {     // Durchlaufen aller verbliebenen Personen (nach Index)
                 double randomNum = randGen.nextDouble();
-                if (randomNum < pT) {
-                    aenderung = person.abhaengigeMeinung(personen.get(i));
-                    if (aenderung) anzMeinungA++;
+                if (randomNum < pT) {                           // Abfrage, ob Treffen stattfindet
+                    aenderung = person.abhaengigeMeinung(personen.get(i));  // Abhängige Meinungsbildung durchlaufen + Änderung der Meinung setzten, falls eingetreten
+                    if (aenderung) anzMeinungA++;               // Wenn sich Meinung geändert hat, Anzahl an Meinungsvertretern erhöhen
                 }
             }
             index++;
-            person.erhoeheVergangeneTage();
+            person.erhoeheVergangeneTage();     // Anzahl an vergangenen Tagen erhöhen (Für dauer der Empfänglichkeit wichtig)
         }
     }
 
@@ -94,8 +84,8 @@ public class Tagesablauf {
     void simTagUnabhaengigeMeinung(double pA) {
         boolean mAenderung;
         for (Person person : personen) {
-            mAenderung = person.unabhaengigeMeinung(pA);
-            if (mAenderung) anzMeinungA++;
+            mAenderung = person.unabhaengigeMeinung(pA);    // Unabhängige Meinungsbildung durchlaufen + Änderung der Meinung setzten, falls eingetreten
+            if (mAenderung) anzMeinungA++;                  // Wenn sich Meinung geändert hat, Anzahl an Meinungsvertretern erhöhen
         }
     }
 

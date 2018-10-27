@@ -72,13 +72,13 @@ public class Person {
     boolean unabhaengigeMeinung (double pA)
     {
         boolean aenderung = false;
-        if (!meinungA)
+        if (!meinungA)              // Wenn Meinung A noch nicht gegeben
         {
             //TODO: new Random(x) zum debuggen (deterministisch)
             // pa = 0.1 ... pa,n = 1-(1-pa)^n .... k * pa,n (3 bereits bestehende Meinungen beachten)
             double randomNum = randGen.nextDouble();
             meinungA = randomNum < pA;
-            aenderung = meinungA;
+            aenderung = meinungA;           // Setzen, dass die Meinung sich geändert hat
         }
         return aenderung;
     }
@@ -91,31 +91,33 @@ public class Person {
      */
     boolean abhaengigeMeinung(Person p)
     {
-        if (vergangeneTage > dauerEmpfaenglichkeit)
-        {
-            anzTreffen = 0;
-            missionare.clear();
-        }
-
         boolean aenderung = false;
 
-        if (!p.getMeinungA() && meinungA)
+        if (vergangeneTage > dauerEmpfaenglichkeit) // Abfrage Ablauf des Zeitabschnitts für Empfänglichkeit
         {
+            anzTreffen = 0;         // Anzahl der Treffen zurücksetzen
+            missionare.clear();     // Liste der getroffenen Personen mit Meinung A leeren
+        }
+
+        if (!p.getMeinungA() && meinungA)   // this besitzt Meinung A und die getroffene Person nicht
+        {
+            // Aufrufen der abhaengigenMeinungsbildung bei der getroffenen Person mit this
+            // + setzen der Änderung, sofern sich die Meinung geändert hat
             aenderung = p.abhaengigeMeinung(this);
         }
 
-        if (p.getMeinungA()
-            && !meinungA
-            && (missionare.isEmpty() ? true : !missionare.contains(p)))
+        if (p.getMeinungA()                                             // getroffene Person vertritt Meinung A
+            && !meinungA                                                // this vertritt Meinung A nicht
+            && (missionare.isEmpty() ? true : !missionare.contains(p))) // getroffene Person gehört nicht zum Personenkreis, der this bereits missioniert hat
         {
             anzTreffen++;
-            missionare.add(p);
-            if (anzTreffen >= anzBenoetigterTreffen)
+            missionare.add(p);                          // Füge Person zum Personenkreis, der this bereits missioniert hat, hinzu
+            if (anzTreffen >= anzBenoetigterTreffen)    // Abfrage auf ausreichend Treffen für Meinungsänderung
             {
                 meinungA = true;
                 aenderung = true;
             }
-            resetVergangeneTage();
+            resetVergangeneTage();      // Zurücksetzen der vergangenen Tage für die Dauer der Empfänglichkeit
         }
         return aenderung;
     }
