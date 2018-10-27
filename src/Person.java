@@ -21,10 +21,6 @@ public class Person {
      */
     private boolean meinungA;
     /**
-     * Anzahl der vergangenen Treffen
-     */
-    private int anzTreffen;
-    /**
      * Benötigte Anzahl von Treffen für abhängige Meinungsbildung
      */
     private int anzBenoetigterTreffen;
@@ -95,7 +91,6 @@ public class Person {
 
         if (vergangeneTage > dauerEmpfaenglichkeit) // Abfrage Ablauf des Zeitabschnitts für Empfänglichkeit
         {
-//            anzTreffen = 0;         // Anzahl der Treffen zurücksetzen
             missionare.clear();     // Liste der getroffenen Personen mit Meinung A leeren
         }
 
@@ -110,7 +105,6 @@ public class Person {
             && !meinungA                                                // this vertritt Meinung A nicht
             && (missionare.isEmpty() ? true : !missionare.contains(p))) // getroffene Person gehört nicht zum Personenkreis, der this bereits missioniert hat
         {
-//            anzTreffen++;
             missionare.add(p);                          // Füge Person zum Personenkreis, der this bereits missioniert hat, hinzu
             resetVergangeneTage();      // Zurücksetzen der vergangenen Tage für die Dauer der Empfänglichkeit
             if (missionare.size() >= anzBenoetigterTreffen)    // Abfrage auf ausreichend Treffen für Meinungsänderung
@@ -144,7 +138,7 @@ public class Person {
      * @return Gibt Personen ID, anzahl an bereits grtroffenen Missionaren und derzeitige Meinung A zurück
      */
     public String toString() {
-        return "PersonID:\t" + pID + "\tAnzahl an Treffen(A): " + anzTreffen + " Meinung: " + (meinungA ? "A" : "X") + ".";
+        return "PersonID:\t" + pID + "\tAnzahl an Treffen(A): " + missionare.size() + " Meinung: " + (meinungA ? "A" : "X") + ".";
     }
 
     /**
