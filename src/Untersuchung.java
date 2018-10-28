@@ -88,11 +88,13 @@ public class Untersuchung {
      */
     public void start() throws IOException {
         erstelleDaten("DatenReihen_abhaengig.csv", true);
-        if (verbose) System.out.println("\nDurchnitt nötiger Tage für 100% (abhaengig): " +
-                            getAndResetSchnitt() + "\tBei " + pBegegnung*100.0 + "%");
+        double schnittAbhaengig = getAndResetSchnitt();
         erstelleDaten("DatenReihen_unabhaengig.csv", false);
+        double schnittUnabhaengig = getAndResetSchnitt();
         if (verbose) System.out.println("\nDurchnitt nötiger Tage für 100% (unabhaengig): " +
-                            getAndResetSchnitt() + "\tBei " + pMeinungsbildung*100.0 + "%");
+                schnittUnabhaengig + "\tBei " + pMeinungsbildung*100.0 + "%");
+        if (verbose) System.out.println("\nDurchnitt nötiger Tage für 100% (abhaengig): " +
+                schnittAbhaengig + "\tBei " + pBegegnung*100.0 + "%");
     }
 
     /**
@@ -119,7 +121,7 @@ public class Untersuchung {
             // Eintragen der relevanten Daten in ein Array und hinzufügen in die Liste
             String[] csvData_x = {  tag + "",
                                     ablauf.meinungsVerteilung() + "",
-                                    ablaufart ? "abhängige Meinungsbildung" :"unabhängige Meinungsbildung"
+                                    ablaufart ? "abhaengige Meinungsbildung" :"unabhaengige Meinungsbildung"
                                     };
             csvDataList.add(csvData_x);
             // Abfrage Tag erreicht 100% Meinungsvertreter A und Schritt für die Durchschnittsbildung hat nocht nicht stattgefunden
