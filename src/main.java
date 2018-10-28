@@ -13,9 +13,9 @@ public class main {
                             3,
                             0.00405,        // 0.00405 ~Durchnittlich 200 nötige Tage für 100%
                             0.022,      // 0.022 ~Durchnittlich 200 nötige Tage für 100%
-                            1000,
+                            10000,
                             2,
-                            10,
+                            5,
                             true
                             );
         u.start();
