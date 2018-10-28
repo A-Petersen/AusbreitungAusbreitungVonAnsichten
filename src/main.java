@@ -9,13 +9,13 @@ public class main {
         Untersuchung u =    new Untersuchung
                             (
                             500,
-                            100,
+                            50,
                             3,
                             0.00405,        // 0.00405 ~Durchnittlich 200 nötige Tage für 100%
                             0.022,      // 0.022 ~Durchnittlich 200 nötige Tage für 100%
                             1000,
                             2,
-                            5,
+                            10,
                             true
                             );
         u.start();
