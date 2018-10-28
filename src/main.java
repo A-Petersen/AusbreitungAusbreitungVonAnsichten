@@ -9,11 +9,11 @@ public class main {
         Untersuchung u =    new Untersuchung
                             (
                             500,
-                            50,
+                            100,
                             3,
                             0.00405,        // 0.00405 ~Durchnittlich 200 nötige Tage für 100%
                             0.022,      // 0.022 ~Durchnittlich 200 nötige Tage für 100%
-                            10000,
+                            1000,
                             2,
                             5,
                             true
